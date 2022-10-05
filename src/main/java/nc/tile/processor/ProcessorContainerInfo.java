@@ -17,19 +17,11 @@ public class ProcessorContainerInfo<TILE extends TileEntity> extends TileContain
 	public final int itemOutputSize;
 	public final int fluidOutputSize;
 	
-	public final int inputTankCapacity;
-	public final int outputTankCapacity;
-	
-	public final double defaultProcessTime;
-	public final double defaultProcessPower;
-	
 	public final boolean consumesInputs;
+	
 	public final boolean losesProgress;
 	
-	public final int playerInventoryX;
-	public final int playerInventoryY;
-	
-	public ProcessorContainerInfo(String name, ContainerFunction<TILE> containerFunction, GuiFunction<TILE> guiFunction, ContainerFunction<TILE> configContainerFunction, GuiFunction<TILE> configGuiFunction, int itemInputSize, int fluidInputSize, int itemOutputSize, int fluidOutputSize, int inputTankCapacity, int outputTankCapacity, double defaultProcessTime, double defaultProcessPower, boolean consumesInputs, boolean losesProgress, int playerInventoryX, int playerInventoryY) {
+	public ProcessorContainerInfo(String name, ContainerFunction<TILE> containerFunction, GuiFunction<TILE> guiFunction, ContainerFunction<TILE> configContainerFunction, GuiFunction<TILE> configGuiFunction, int itemInputSize, int fluidInputSize, int itemOutputSize, int fluidOutputSize, boolean consumesInputs, boolean losesProgress) {
 		super(name, containerFunction, guiFunction);
 		this.configContainerFunction = configContainerFunction;
 		this.configGuiFunction = configGuiFunction;
@@ -37,14 +29,8 @@ public class ProcessorContainerInfo<TILE extends TileEntity> extends TileContain
 		this.fluidInputSize = fluidInputSize;
 		this.itemOutputSize = itemOutputSize;
 		this.fluidOutputSize = fluidOutputSize;
-		this.inputTankCapacity = inputTankCapacity;
-		this.outputTankCapacity = outputTankCapacity;
-		this.defaultProcessTime = defaultProcessTime;
-		this.defaultProcessPower = defaultProcessPower;
 		this.consumesInputs = consumesInputs;
 		this.losesProgress = losesProgress;
-		this.playerInventoryX = playerInventoryX;
-		this.playerInventoryY = playerInventoryY;
 	}
 	
 	@Override

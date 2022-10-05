@@ -12,12 +12,12 @@ public class BlockSimpleSidedTile extends BlockSidedTile implements ITileType {
 	public BlockSimpleSidedTile(String name) {
 		super(Material.IRON);
 		tileInfo = TileInfoHandler.getBlockSimpleTileInfo(name);
-		setCreativeTab(tileInfo.creativeTab);
+		setCreativeTab(tileInfo.getCreativeTab());
 	}
 	
 	@Override
 	public String getTileName() {
-		return tileInfo.name;
+		return tileInfo.getName();
 	}
 	
 	@Override

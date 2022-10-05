@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 
 import nc.enumm.MetaEnums;
 import nc.multiblock.cuboidal.*;
-import nc.multiblock.fission.*;
+import nc.multiblock.fission.FissionReactor;
 import nc.recipe.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
@@ -100,10 +100,7 @@ public class TileFissionSource extends TileFissionPart {
 		super.onBlockNeighborChanged(state, worldIn, posIn, fromPos);
 		setActivity(getIsRedstonePowered());
 		if (!worldIn.isRemote && wasRedstonePowered != getIsRedstonePowered()) {
-			FissionReactorLogic logic = getLogic();
-			if (logic != null) {
-				logic.onSourceUpdated(this);
-			}
+			getLogic().onSourceUpdated(this);
 		}
 	}
 	

@@ -345,42 +345,42 @@ public class QuantumComputer extends Multiblock<QuantumComputer, IQuantumCompute
 		checkStateDim(dim);
 		
 		int[] z = new int[_n.size()];
-		for (int i = 0; i < _n.size(); ++i) {
-			z[i] = q - _n.getInt(i) - 1;
+		for (int j = 0; j < _n.size(); ++j) {
+			z[j] = q - _n.getInt(j) - 1;
 		}
 		
 		Int2DoubleMap w = new Int2DoubleOpenHashMap();
 		Int2ObjectMap<IntSet> s = new Int2ObjectOpenHashMap<>();
 		IntList l = new IntArrayList();
-		IntSet j = null;
+		IntSet i = null;
 		double a, sum = 0D;
-		for (int i = 0; i < dim; ++i) {
-			a = Complex.absSq(state.re[i], state.im[i]);
+		for (int j = 0; j < dim; ++j) {
+			a = Complex.absSq(state.re[j], state.im[j]);
 			sum += a;
-			o = NCMath.onlyBits(i, z);
+			o = NCMath.onlyBits(j, z);
 			if (w.containsKey(o)) {
 				w.put(o, w.get(o) + a);
-				s.get(o).add(i);
+				s.get(o).add(j);
 			}
 			else {
 				l.add(o);
 				w.put(o, a);
-				s.put(o, set(i));
+				s.put(o, set(j));
 			}
 		}
 		
 		o = dim - 1;
 		sum *= rand.nextDouble();
-		for (int i : l) {
-			sum -= w.get(i);
+		for (int j : l) {
+			sum -= w.get(j);
 			if (sum < 0) {
-				o = i;
-				j = s.get(i);
+				o = j;
+				i = s.get(j);
 				break;
 			}
 		}
 		
-		collapse(dim, o, j == null ? set(dim - 1) : j, n);
+		collapse(dim, o, i == null ? set(dim - 1) : i, n);
 	}
 	
 	// Gates
