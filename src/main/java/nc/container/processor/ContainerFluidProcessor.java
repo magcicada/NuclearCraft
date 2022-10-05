@@ -4,18 +4,21 @@ import nc.container.ContainerTile;
 import nc.init.NCItems;
 import nc.recipe.BasicRecipeHandler;
 import nc.tile.ITileGui;
-import nc.tile.inventory.ITileFilteredInventory;
+import nc.tile.inventory.ITileInventory;
 import nc.tile.processor.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public abstract class ContainerFilteredItemProcessor<PROCESSOR extends IItemProcessor & ITileFilteredInventory & ITileGui<?>> extends ContainerTile<PROCESSOR> {
+public abstract class ContainerFluidProcessor<PROCESSOR extends IFluidProcessor & ITileGui<?>> extends ContainerTile<PROCESSOR> {
 	
 	protected final PROCESSOR tile;
 	protected final BasicRecipeHandler recipeHandler;
 	
-	public ContainerFilteredItemProcessor(EntityPlayer player, PROCESSOR tileEntity, BasicRecipeHandler recipeHandler) {
+	protected static final ItemStack SPEED_UPGRADE = new ItemStack(NCItems.upgrade, 1, 0);
+	protected static final ItemStack ENERGY_UPGRADE = new ItemStack(NCItems.upgrade, 1, 1);
+	
+	public ContainerFluidProcessor(EntityPlayer player, PROCESSOR tileEntity, BasicRecipeHandler recipeHandler) {
 		super(tileEntity);
 		tile = tileEntity;
 		this.recipeHandler = recipeHandler;
@@ -40,52 +43,44 @@ public abstract class ContainerFilteredItemProcessor<PROCESSOR extends IItemProc
 		Slot slot = inventorySlots.get(index);
 		final boolean hasUpgrades = tile instanceof IBasicUpgradable && ((IBasicUpgradable) tile).hasUpgrades();
 		int upgrades = hasUpgrades ? ((IBasicUpgradable) tile).getNumberOfUpgrades() : 0;
-		int invStart = tile.getItemInputSize() + tile.getItemOutputSize() + upgrades;
-		int speedUpgradeSlot = tile.getItemInputSize() + tile.getItemOutputSize();
-		int otherUpgradeSlot = tile.getItemInputSize() + tile.getItemOutputSize() + 1;
-		int invEnd = tile.getItemInputSize() + tile.getItemOutputSize() + 36 + upgrades;
+		int invStart = upgrades;
+		int speedUpgradeSlot = 0;
+		int otherUpgradeSlot = 1;
+		int invEnd = 36 + upgrades;
 		if (slot != null && slot.getHasStack()) {
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
-			if (index >= tile.getItemInputSize() && index < invStart) {
+			if (index >= 0 && index < invStart) {
 				if (!mergeItemStack(itemstack1, invStart, invEnd, false)) {
 					return ItemStack.EMPTY;
 				}
 				slot.onSlotChange(itemstack1, itemstack);
 			}
 			else if (index >= invStart) {
-				if (hasUpgrades && itemstack1.getItem() == NCItems.upgrade) {
-					if (tile.isItemValidForSlot(speedUpgradeSlot, itemstack1)) {
+				if (tile instanceof ITileInventory && hasUpgrades && itemstack1.getItem() == NCItems.upgrade) {
+					if (((ITileInventory) tile).isItemValidForSlot(speedUpgradeSlot, itemstack1)) {
 						if (!mergeItemStack(itemstack1, speedUpgradeSlot, speedUpgradeSlot + 1, false)) {
 							return ItemStack.EMPTY;
 						}
 					}
-					else if (tile.isItemValidForSlot(otherUpgradeSlot, itemstack1)) {
+					else if (((ITileInventory) tile).isItemValidForSlot(otherUpgradeSlot, itemstack1)) {
 						if (!mergeItemStack(itemstack1, otherUpgradeSlot, otherUpgradeSlot + 1, false)) {
 							return ItemStack.EMPTY;
 						}
 					}
 				}
 				if (recipeHandler.isValidItemInput(itemstack1)) {
-					if (!mergeItemStack(itemstack1, 0, tile.getItemInputSize(), false)) {
+					if (!mergeItemStack(itemstack1, 0, 0, false)) {
 						return ItemStack.EMPTY;
 					}
 				}
-				else {
-					if (tile.canModifyFilter(0) && !tile.getFilterStacks().get(0).isEmpty()) {
-						tile.getFilterStacks().set(0, ItemStack.EMPTY);
-						tile.onFilterChanged(0);
-						inventorySlots.get(0).onSlotChanged();
+				else if (index >= invStart && index < invEnd - 9) {
+					if (!mergeItemStack(itemstack1, invEnd - 9, invEnd, false)) {
 						return ItemStack.EMPTY;
 					}
-					else if (index >= invStart && index < invEnd - 9) {
-						if (!mergeItemStack(itemstack1, invEnd - 9, invEnd, false)) {
-							return ItemStack.EMPTY;
-						}
-					}
-					else if (index >= invEnd - 9 && index < invEnd && !mergeItemStack(itemstack1, invStart, invEnd - 9, false)) {
-						return ItemStack.EMPTY;
-					}
+				}
+				else if (index >= invEnd - 9 && index < invEnd && !mergeItemStack(itemstack1, invStart, invEnd - 9, false)) {
+					return ItemStack.EMPTY;
 				}
 			}
 			else if (!mergeItemStack(itemstack1, invStart, invEnd, false)) {

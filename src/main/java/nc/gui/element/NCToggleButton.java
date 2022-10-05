@@ -35,18 +35,13 @@ public abstract class NCToggleButton extends NCButton {
 	@SideOnly(Side.CLIENT)
 	public static abstract class Image extends NCToggleButton {
 		
-		public static final String BUTTONS_OFF = Global.MOD_ID + ":textures/gui/buttons/off.png";
-		public static final String BUTTONS_ON = Global.MOD_ID + ":textures/gui/buttons/on.png";
-		
-		public final ResourceLocation unpressedTexture;
-		public final ResourceLocation pressedTexture;
+		public final ResourceLocation unpressedTexture = new ResourceLocation(Global.MOD_ID + ":textures/gui/buttons/off.png");
+		public final ResourceLocation pressedTexture = new ResourceLocation(Global.MOD_ID + ":textures/gui/buttons/on.png");
 		protected int textureX, textureY;
 		protected int textureWidth, textureHeight;
 		
-		public Image(int id, int x, int y, String unpressedTexture, String pressedTexture, int textureX, int textureY, int textureWidth, int textureHeight, boolean pressed) {
+		public Image(int id, int x, int y, int textureX, int textureY, int textureWidth, int textureHeight, boolean pressed) {
 			super(id, x, y, textureWidth, textureHeight, pressed);
-			this.unpressedTexture = new ResourceLocation(unpressedTexture);
-			this.pressedTexture = new ResourceLocation(pressedTexture);
 			this.textureX = textureX;
 			this.textureY = textureY;
 			this.textureWidth = textureWidth;
@@ -108,7 +103,7 @@ public abstract class NCToggleButton extends NCButton {
 	public static class InputTanksSeparated extends Image {
 		
 		public InputTanksSeparated(int id, int x, int y, ITileFluid machine) {
-			super(id, x, y, BUTTONS_OFF, BUTTONS_ON, 0, 0, 18, 18, machine.getInputTanksSeparated());
+			super(id, x, y, 0, 0, 18, 18, machine.getInputTanksSeparated());
 		}
 	}
 	
@@ -116,7 +111,7 @@ public abstract class NCToggleButton extends NCButton {
 	public static class VoidUnusableFluidInput extends Image {
 		
 		public VoidUnusableFluidInput(int id, int x, int y, ITileFluid machine, int tankNumber) {
-			super(id, x, y, BUTTONS_OFF, BUTTONS_ON, 18, 0, 18, 18, machine.getVoidUnusableFluidInput(tankNumber));
+			super(id, x, y, 18, 0, 18, 18, machine.getVoidUnusableFluidInput(tankNumber));
 		}
 	}
 	
@@ -124,7 +119,7 @@ public abstract class NCToggleButton extends NCButton {
 	public static class VoidExcessFluidOutput extends Image {
 		
 		public VoidExcessFluidOutput(int id, int x, int y, ITileFluid machine, int tankNumber) {
-			super(id, x, y, BUTTONS_OFF, BUTTONS_ON, 36, 0, 18, 18, machine.getTankOutputSetting(tankNumber) != TankOutputSetting.DEFAULT);
+			super(id, x, y, 36, 0, 18, 18, machine.getTankOutputSetting(tankNumber) != TankOutputSetting.DEFAULT);
 		}
 	}
 	
@@ -132,7 +127,7 @@ public abstract class NCToggleButton extends NCButton {
 	public static class AlternateComparator extends Image {
 		
 		public AlternateComparator(int id, int x, int y, ITile machine) {
-			super(id, x, y, BUTTONS_OFF, BUTTONS_ON, 54, 0, 18, 18, machine.getAlternateComparator());
+			super(id, x, y, 54, 0, 18, 18, machine.getAlternateComparator());
 		}
 	}
 	
@@ -140,7 +135,7 @@ public abstract class NCToggleButton extends NCButton {
 	public static class RedstoneControl extends Image {
 		
 		public RedstoneControl(int id, int x, int y, ITile machine) {
-			super(id, x, y, BUTTONS_OFF, BUTTONS_ON, 72, 0, 18, 18, machine.getRedstoneControl());
+			super(id, x, y, 72, 0, 18, 18, machine.getRedstoneControl());
 		}
 	}
 }

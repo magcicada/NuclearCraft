@@ -7,14 +7,12 @@ import net.minecraft.tileentity.TileEntity;
 
 public class TileContainerInfo<TILE extends TileEntity> {
 	
-	public final String modId;
 	public final String name;
 	
 	protected final ContainerFunction<TILE> containerFunction;
 	protected final GuiFunction<TILE> guiFunction;
 	
-	public TileContainerInfo(String modId, String name, ContainerFunction<TILE> containerFunction, GuiFunction<TILE> guiFunction) {
-		this.modId = modId;
+	public TileContainerInfo(String name, ContainerFunction<TILE> containerFunction, GuiFunction<TILE> guiFunction) {
 		this.name = name;
 		this.containerFunction = containerFunction;
 		this.guiFunction = guiFunction;

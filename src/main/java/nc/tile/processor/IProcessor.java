@@ -5,25 +5,20 @@ import java.util.*;
 import javax.annotation.Nonnull;
 
 import it.unimi.dsi.fastutil.ints.*;
-import nc.network.tile.ProcessorUpdatePacket;
 import nc.recipe.*;
 import nc.recipe.ingredient.*;
-import nc.tile.ITileGui;
 import nc.tile.dummy.IInterfaceable;
 import nc.tile.fluid.ITileFluid;
-import nc.tile.internal.energy.EnergyConnection;
 import nc.tile.internal.fluid.*;
 import nc.tile.internal.inventory.*;
 import nc.tile.inventory.ITileInventory;
-import nc.util.*;
+import nc.util.StackHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraftforge.fluids.FluidStack;
 
-public abstract interface IProcessor<TILE extends TileEntity & IProcessor<TILE, INFO>, INFO extends ProcessorContainerInfo<TILE, INFO>> extends ITickable, ITileInventory, ITileFluid, IInterfaceable, ITileGui<TILE, ProcessorUpdatePacket, INFO> {
+public abstract interface IProcessor<INFO extends ProcessorContainerInfo<?>> extends ITickable, ITileInventory, ITileFluid, IInterfaceable {
 	
-	@Override
 	public INFO getContainerInfo();
 	
 	public boolean getHasConsumed();
@@ -312,16 +307,7 @@ public abstract interface IProcessor<TILE extends TileEntity & IProcessor<TILE, 
 		}
 	}
 	
-	public static <TILE extends TileEntity & IProcessor<TILE, INFO>, INFO extends ProcessorContainerInfo<TILE, INFO>> int energyCapacity(INFO containerInfo, double speedMultiplier, double powerMultiplier) {
-		String name = containerInfo.name;
-		return NCMath.toInt(Math.ceil(RecipeStats.getProcessorMaxBaseProcessTime(name) / speedMultiplier) * Math.ceil(RecipeStats.getProcessorMaxBaseProcessPower(name) * powerMultiplier));
-	}
-	
-	public static <TILE extends TileEntity & IProcessor<TILE, INFO>, INFO extends ProcessorContainerInfo<TILE, INFO>> EnergyConnection defaultEnergyConnection(INFO containerInfo) {
-		return containerInfo.defaultProcessPower == 0 ? EnergyConnection.NON : EnergyConnection.IN;
-	}
-	
-	public static <TILE extends TileEntity & IProcessor<TILE, INFO>, INFO extends ProcessorContainerInfo<TILE, INFO>> List<ItemSorption> defaultItemSorptions(INFO containerInfo) {
+	public static List<ItemSorption> defaultItemSorptions(ProcessorContainerInfo<?> containerInfo) {
 		List<ItemSorption> itemSorptions = new ArrayList<>();
 		for (int i = 0; i < containerInfo.itemInputSize; ++i) {
 			itemSorptions.add(ItemSorption.IN);
@@ -332,7 +318,7 @@ public abstract interface IProcessor<TILE extends TileEntity & IProcessor<TILE, 
 		return itemSorptions;
 	}
 	
-	public static <TILE extends TileEntity & IProcessor<TILE, INFO>, INFO extends ProcessorContainerInfo<TILE, INFO>> IntList defaultTankCapacities(INFO containerInfo) {
+	public static IntList defaultTankCapacities(ProcessorContainerInfo<?> containerInfo) {
 		IntList tankCapacities = new IntArrayList();
 		for (int i = 0; i < containerInfo.fluidInputSize; ++i) {
 			tankCapacities.add(containerInfo.inputTankCapacity);
@@ -343,7 +329,7 @@ public abstract interface IProcessor<TILE extends TileEntity & IProcessor<TILE, 
 		return tankCapacities;
 	}
 	
-	public static <TILE extends TileEntity & IProcessor<TILE, INFO>, INFO extends ProcessorContainerInfo<TILE, INFO>> List<TankSorption> defaultTankSorptions(INFO containerInfo) {
+	public static List<TankSorption> defaultTankSorptions(ProcessorContainerInfo<?> containerInfo) {
 		List<TankSorption> tankSorptions = new ArrayList<>();
 		for (int i = 0; i < containerInfo.fluidInputSize; ++i) {
 			tankSorptions.add(TankSorption.IN);

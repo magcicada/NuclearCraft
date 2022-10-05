@@ -1,6 +1,6 @@
 package nc.tile.processor;
 
-public interface IBasicUpgradeProcessor {
+public interface IBasicUpgradable {
 	
 	public int getSpeedUpgradeSlot();
 	

@@ -4,18 +4,20 @@ import nc.container.ContainerTile;
 import nc.init.NCItems;
 import nc.recipe.BasicRecipeHandler;
 import nc.tile.ITileGui;
-import nc.tile.inventory.ITileFilteredInventory;
 import nc.tile.processor.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public abstract class ContainerFilteredItemProcessor<PROCESSOR extends IItemProcessor & ITileFilteredInventory & ITileGui<?>> extends ContainerTile<PROCESSOR> {
+public abstract class ContainerItemFluidProcessor<PROCESSOR extends IItemFluidProcessor & ITileGui<?>> extends ContainerTile<PROCESSOR> {
 	
 	protected final PROCESSOR tile;
 	protected final BasicRecipeHandler recipeHandler;
 	
-	public ContainerFilteredItemProcessor(EntityPlayer player, PROCESSOR tileEntity, BasicRecipeHandler recipeHandler) {
+	protected static final ItemStack SPEED_UPGRADE = new ItemStack(NCItems.upgrade, 1, 0);
+	protected static final ItemStack ENERGY_UPGRADE = new ItemStack(NCItems.upgrade, 1, 1);
+	
+	public ContainerItemFluidProcessor(EntityPlayer player, PROCESSOR tileEntity, BasicRecipeHandler recipeHandler) {
 		super(tileEntity);
 		tile = tileEntity;
 		this.recipeHandler = recipeHandler;
@@ -71,21 +73,13 @@ public abstract class ContainerFilteredItemProcessor<PROCESSOR extends IItemProc
 						return ItemStack.EMPTY;
 					}
 				}
-				else {
-					if (tile.canModifyFilter(0) && !tile.getFilterStacks().get(0).isEmpty()) {
-						tile.getFilterStacks().set(0, ItemStack.EMPTY);
-						tile.onFilterChanged(0);
-						inventorySlots.get(0).onSlotChanged();
+				else if (index >= invStart && index < invEnd - 9) {
+					if (!mergeItemStack(itemstack1, invEnd - 9, invEnd, false)) {
 						return ItemStack.EMPTY;
 					}
-					else if (index >= invStart && index < invEnd - 9) {
-						if (!mergeItemStack(itemstack1, invEnd - 9, invEnd, false)) {
-							return ItemStack.EMPTY;
-						}
-					}
-					else if (index >= invEnd - 9 && index < invEnd && !mergeItemStack(itemstack1, invStart, invEnd - 9, false)) {
-						return ItemStack.EMPTY;
-					}
+				}
+				else if (index >= invEnd - 9 && index < invEnd && !mergeItemStack(itemstack1, invStart, invEnd - 9, false)) {
+					return ItemStack.EMPTY;
 				}
 			}
 			else if (!mergeItemStack(itemstack1, invStart, invEnd, false)) {

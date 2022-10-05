@@ -10,9 +10,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.*;
 import net.minecraftforge.fml.relauncher.*;
 
-public class BlockSimpleTile<TILE extends TileEntity> extends BlockTile implements ITileType {
+public class BlockSimpleTile extends BlockTile implements ITileType {
 	
-	protected final BlockSimpleTileInfo<TILE> tileInfo;
+	protected final BlockSimpleTileInfo<?> tileInfo;
 	
 	public BlockSimpleTile(String name) {
 		super(Material.IRON);
@@ -30,7 +30,7 @@ public class BlockSimpleTile<TILE extends TileEntity> extends BlockTile implemen
 		return tileInfo.getNewTile();
 	}
 	
-	public static class Transparent<TILE extends TileEntity> extends BlockSimpleTile<TILE> {
+	public static class Transparent extends BlockSimpleTile {
 		
 		protected final boolean smartRender;
 		
